@@ -4,6 +4,7 @@ package com.card.task.app.controller;
 import com.card.task.app.model.CardStatus;
 import com.card.task.app.model.Card;
 import com.card.task.app.model.RoleEnum;
+import com.card.task.app.model.User;
 import com.card.task.app.payload.CardRequest;
 import com.card.task.app.payload.UpdateCardRequest;
 import com.card.task.app.service.card.CardService;
@@ -17,6 +18,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -35,16 +38,37 @@ public class CardController {
     RoleService roleService;
 
     @GetMapping("/access_all_content")
-    public ResponseEntity<List<Card>> findAllCardListResponse() {
-        return new ResponseEntity<>(cardService.findAll(), HttpStatus.OK);
+    public ResponseEntity<List<Card>> findAllCardListResponse(@AuthenticationPrincipal UserDetails userDetails) {
+        Optional<User> user = userService.findByUsername(userDetails.getUsername());
+
+        if (!user.isPresent()) {
+            return new ResponseEntity("Sorry  does not exist", HttpStatus.NOT_FOUND);
+        }
+        List<Card> cards = null;
+        if (!user.get().getUsername().equals(userService.existsByUsername(user.get().getUsername())) && !user.get().getRoles().equals(roleService.existsByName(RoleEnum.ROLE_ADMIN))) {
+            cards = cardService.findAll();
+        } else if (!user.get().getUsername().equals(userService.existsByUsername(user.get().getUsername())) && !user.get().getRoles().equals(roleService.existsByName(RoleEnum.ROLE_USER))) {
+            cards = cardService.findCardByUser(user.get().getUsername());
+        } else {
+            return new ResponseEntity("Sorry card  does not exist", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(cards, HttpStatus.OK);
     }
 
     @GetMapping("/access_card_by_username")
     public ResponseEntity<List<Card>> findAllCardResponse(Authentication authentication) {
-        String username = authentication.getName();
+        Optional<User> user = userService.findByUsername(authentication.getName());
+
+        if (!user.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         List<Card> cardList = null;
-        if(userService.existsByUsername(username) == roleService.existsByName(RoleEnum.ROLE_USER)) {
-            cardList = cardService.findCardByUser(username);
+        if (!user.get().getUsername().equals(userService.existsByUsername(user.get().getUsername()))) {
+            cardList = cardService.findAllByUser(user.get().getUsername());
+        }else {
+            return new ResponseEntity("Sorry the card with that user does not exist",HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(cardList, HttpStatus.OK);
     }
@@ -123,7 +147,7 @@ public class CardController {
             Map<String, Object> map = new HashMap<>();
             map.put("content", content);
             map.put("currentPage", pageCards.getNumber());
-            map.put("pageSize",pageCards.getSize());
+            map.put("pageSize", pageCards.getSize());
             map.put("totalItems", pageCards.getTotalElements());
             map.put("totalPages", pageCards.getTotalPages());
 

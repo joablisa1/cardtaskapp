@@ -19,6 +19,8 @@ public interface CardRepository extends JpaRepository<Card,Long> {
 
     Optional<Card> findCardByName(String name);
 
+    List<Card>findDistinctByUser(User user);
+
     List<Card> findCardByUser(User user);
 
     @Query("select c from Card c where c.name like %?1% or c.description  like %?1% or c.color like %?1% or c.status like %?1%  or  c.creationDate like %?1% ")

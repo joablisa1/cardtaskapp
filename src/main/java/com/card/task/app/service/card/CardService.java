@@ -18,6 +18,8 @@ public interface CardService {
 
     Card updateCard(Card card, String username);
 
+    List<Card>findAllByUser(String username);
+
     Page<Card> pageCards(Pageable pageable);
 
     Page<Card> searchCard(String keyword, Pageable pageable);

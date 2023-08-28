@@ -42,6 +42,12 @@ public class CardServiceImpl implements CardService {
     }
 
     @Override
+    public List<Card> findAllByUser(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return cardRepository.findDistinctByUser(user.get());
+    }
+
+    @Override
     public Page<Card> pageCards(Pageable pageable) {
         return cardRepository.pageCards(pageable);
     }
