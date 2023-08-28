@@ -29,7 +29,7 @@ password:1234
 								NOTES
 							.............
 Please ensure that  mysql password and username  you change them appropriately with what you are using on your machine.
-I have not use email but I have  provided the username to use in this case for login.
+I have not used email but I have  provided the username to use in this case for login.
 I have  swagger UI latest already configured and include in the project, just import the project into your IDE and execute/run it.
 I also have default user in the project, there is a package init  which contain a SystemInt class that will initialize the users into the database and I have also added two dummy card to startup with you can create them .
 You will have to authenticate the user using the password, I have provided above and authorize them on swagger UI or postman for access
