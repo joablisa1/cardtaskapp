@@ -114,15 +114,6 @@ public class AuthController {
 
         user.getRoles().addAll(roles);
         User saved = userService.save(user);
-//        if (saved != null) {
-//            try {
-//                mailService.sendEmail(saved.getEmail(), saved.getPassword());
-//            } catch (MessagingException e) {
-//
-//                e.printStackTrace();
-//            }
-//        }
-
         return ResponseEntity.ok("User registered successfully!");
     }
 }
