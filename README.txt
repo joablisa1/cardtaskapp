@@ -1,11 +1,11 @@
 		Instruction 
 ...................................................
-1.Install Java 17 JDK  or lastest version and configure it correctly.
-2.Install maven 3.9.3 and configure it or latest version and configure it correctly.
+1.Install Java 17 JDK  or latest version and configure it correctly.
+2.Install maven 3.9.3 or latest version and configure it correctly.
 
 	Requirements for the project
 	.....................
-1.Install MYSQL lastest version.
+1.Install MYSQL latest version.
 2.IDE of your choice for development.
 3.SpringBoot 3.1.2 or latest version.
 
